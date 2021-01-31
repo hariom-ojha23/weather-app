@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, ScrollView, Modal, Alert, Button, ImageBackground } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Modal, Alert, Button, ImageBackground, Dimensions, Image } from 'react-native';
 import { API_KEY, HOME_URL } from '../src/API';
 import { Card, Icon, SearchBar } from 'react-native-elements';
 
@@ -9,6 +9,9 @@ const Home = ({navigation}) => {
     const [data, setData] = useState(null);
     const [visible, setVisible] = useState(false);
     const [search, setSearch] = useState('');
+
+    var width = Dimensions.get('window').width;
+    var height = Dimensions.get('window').height;
 
 
     useEffect(() => {
@@ -106,22 +109,27 @@ const Home = ({navigation}) => {
         else if (code == "13n") {return ("night-alt-snow")}
 		else if (code == "50d" || code == "50n") {return ("fog")}
 		else {return(<View><Text>Harry</Text></View>)}
+    }
+    
+    const naiveRound = (num, decimalPlaces) => {
+		var p = Math.pow(10, decimalPlaces);
+		return Math.round(num * p) / p;
 	}
 
 
     return (
-        <ScrollView style={styles.container}>
-            
+        <ScrollView style={{backgroundColor: '#1560bd'}}>
             <View>
                 {
                     data !== null ?
-                    <ImageBackground source={require('../assets/Image/123.jpg')} style={styles.image}>
+                    <View style={styles.container}>
+                    <ImageBackground source={require('../123.jpg')} style={styles.image}>
                         <View>
                             <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                                 <View style={{margin: 10}}>
                                     <Text style={{fontSize: 15, top: 15, left: 15, color: "#fff" }}>{data.current.weather[0].main}</Text>
                                     <View style={styles.container2}>
-                                        <Text style={ styles.temp }>{data.current.temp}</Text>
+                                        <Text style={ styles.temp }>{naiveRound(data.current.temp, 1)}</Text>
                                         <Text style={{top: 10, fontSize: 25, color: "#fff"}}>o</Text>
                                         <Text style={{marginTop: 10, fontSize: 18, top: 30, color: "#fff"}}>C</Text>
                                     </View>
@@ -204,7 +212,7 @@ const Home = ({navigation}) => {
                                         return(
                                             <View key={item.dt} style={{display: "flex", flexDirection: "column", alignItems: "center", paddingHorizontal: 10}}>
                                                 <View style={{display: "flex", flexDirection: "row"}}>
-                                                    <Text style={{color: '#fff'}}>{item.temp}</Text>
+                                                    <Text style={{color: '#fff'}}>{naiveRound(item.temp, 1)}</Text>
                                                     <Text style={{fontSize: 8, color: '#fff'}}>o</Text>
                                                 </View>
                                                     <Icon name={weatherIcon(item.weather[0].icon)} type="fontisto" size={20} color="aqua" style={{marginVertical: 10}} />
@@ -234,7 +242,7 @@ const Home = ({navigation}) => {
                                         <View key={item.dt}>
                                             <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                                                 <View style={{ display: "flex", flexDirection: "row"}}>
-                                                    <View>
+                                                    <View style={{width: 50}}>
                                                         <Text style={{color: '#fff'}}>{timeConverter(item.dt).day}</Text>
                                                         <Text style={{fontSize: 12, color: "#fff"}}>{timeConverter(item.dt).date}/{timeConverter(item.dt).month_int}</Text>
                                                     </View>
@@ -298,7 +306,10 @@ const Home = ({navigation}) => {
                                                 <Icon style={styles.icon} name="thermometer-outline" type="ionicon" color="white" />
                                                 <Text style={{color: '#fff'}}>Dew Point</Text>
                                             </View>
-                                            <Text style={{color: '#fff'}}>{data.current.dew_point}</Text>
+                                            <View style={{ display: "flex", flexDirection: "row"}}>
+                                                <Text style={{color: '#fff'}}>{data.current.dew_point}</Text>
+                                                <Text style={{fontSize: 8, color: "#fff"}}>o</Text>
+                                            </View>
                                         </View>
 
                                         <View style={styles.details}>
@@ -348,7 +359,7 @@ const Home = ({navigation}) => {
 
                             {/* For SunRise and SunSet */}
 
-                            <Card containerStyle={styles.card}>
+                            <Card containerStyle={[styles.card]}>
                                 <Card.Title style={{color: "#fff"}}>Sunrise and Sunset</Card.Title>
                                 <Card.Divider style={{backgroundColor: '#fff'}} />
                                 <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
@@ -382,23 +393,26 @@ const Home = ({navigation}) => {
                             </Card>
                         </View>
                     </ImageBackground>
+                    </View>
                     :
-                    <View style={styles.loading}>
-                        <Text style={{fontSize: 50, color: "blue", textAlign: 'center'}}>Clima</Text>
+                    <View style={[styles.loading, width={width}, height={height}]}>
+                        <Image
+                            style={{width: 150, height: 150, top: -50}}
+                            source={require('../logo.png')}
+                        />
                     </View>
                 }
             </View>
-            
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     loading : {
-        backgroundColor: "yellow",
-        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'column',
-        marginTop: 22
     },
     temp : {
         fontSize : 60,
@@ -406,9 +420,8 @@ const styles = StyleSheet.create({
         fontFamily: "sans-serif-light"
     },
     container: {
-        backgroundColor: '#1560bd',
         flex: 1,
-        flexDirection: "column"
+        flexDirection: "column",
     },
     container2 : {
         display : "flex",
@@ -458,11 +471,12 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         resizeMode: "cover",
-        justifyContent: "center",
+        justifyContent: "center"
     },
     card : {
         backgroundColor: "transparent",
-        borderColor: "transparent"
+        borderColor: "transparent",
+        marginBottom: 5
     },
     daily: {
         marginTop: 5,

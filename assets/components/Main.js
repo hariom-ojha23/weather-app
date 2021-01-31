@@ -33,7 +33,9 @@ const Main = () => {
             <Stack.Screen
             name="Home"
             component={Home}
-            options={{ headerTitle: props => <LogoTitle {...props} /> }}
+            options={{ 
+                headerTitle: props => <LogoTitle {...props} />
+            }}
             />
             <Stack.Screen
             name="Weather"

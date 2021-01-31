@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_KEY, URL, HOME_URL } from '../src/API';
-import { Text, View, StyleSheet, ScrollView, ImageBackground, ActivityIndicator, Alert } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, ImageBackground, ActivityIndicator, Alert, Dimensions } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
-import SvgUri from 'react-native-svg-uri';
 
 
 const Weather = ({route, navigation}) => {
@@ -11,6 +10,8 @@ const Weather = ({route, navigation}) => {
 	const [city, setCity] = useState('');
 
 	const {name} = route.params;
+	var width = Dimensions.get('window').width;
+    var height = Dimensions.get('window').height;
 
 	useEffect(() => {
 		fetch(`${URL}${name}${API_KEY}`)
@@ -23,7 +24,7 @@ const Weather = ({route, navigation}) => {
 		.catch((error) => { 
 			console.log("Error");
 			Alert.alert(
-				'Error', 
+				'Not Found', 
 				"Invalid City, State, Country or Zip code",
 				[
 					{ text: "OK", onPress: () => console.log("OK Pressed") }
@@ -115,20 +116,24 @@ const Weather = ({route, navigation}) => {
 		else {return(<View><Text>Harry</Text></View>)}
 	}
 
+	const naiveRound = (num, decimalPlaces) => {
+		var p = Math.pow(10, decimalPlaces);
+		return Math.round(num * p) / p;
+	}
+
 
 	return (
         <ScrollView style={styles.container}>
             <View>
                 {
 					data !== null ?
-					<ImageBackground source={require('../assets/Image/weather.jpg')} style={styles.image}>
+					<ImageBackground source={require('../weather.jpg')} style={styles.image}>
 						<View>
-
 							<View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
 								<View style={{margin: 10}}>
 									<Text style={{fontSize: 15, top: 15, left: 15, color: "#fff" }}>{data.current.weather[0].main}</Text>
 									<View style={styles.container2}>
-										<Text style={ styles.temp }>{data.current.temp}</Text>
+										<Text style={ styles.temp }>{naiveRound(data.current.temp, 1)}</Text>
 										<Text style={{top: 10, fontSize: 25, color: "#fff"}}>o</Text>
 										<Text style={{marginTop: 10, fontSize: 18, top: 30, color: "#fff"}}>C</Text>
 									</View>
@@ -149,11 +154,11 @@ const Weather = ({route, navigation}) => {
 										</View>
 									</View>
 								</View>
-								<View style={{ margin: 20, top: 5, right: 15, display: "flex", flexDirection: "column", justifyContent: 'center', alignItems: "center"  }}>
-									<View style={{display: "flex"}}>
+								<View style={{ margin: 20, right: 15, display: "flex", flexDirection: "column", justifyContent: 'center', alignItems: "center" }}>
 										<Icon name="location-outline" type="ionicon" color="aqua" size={30} />
-										<Text style={{fontSize: 25, color: "#fff"}}>{city}</Text>
-									</View>
+										<View style={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row'}}>
+											<Text style={{fontSize: 21.5, color: "#fff"}}>{city}</Text>
+										</View>
 									<Text style={{color: "#fff"}}>{timeConverter(data.current.dt).date} {timeConverter(data.current.dt).month_str}  {timeConverter(data.current.dt).year}, {timeConverter(data.current.dt).day}</Text>
 								</View>
 							</View>
@@ -174,7 +179,7 @@ const Weather = ({route, navigation}) => {
 										return(
 											<View key={item.dt} style={{display: "flex", flexDirection: "column", alignItems: "center", paddingHorizontal: 10}}>
 												<View style={{display: "flex", flexDirection: "row"}}>
-													<Text style={{color: '#fff'}}>{item.temp}</Text>
+													<Text style={{color: '#fff'}}>{naiveRound(item.temp, 1)}</Text>
 													<Text style={{fontSize: 8, color: '#fff'}}>o</Text>
 												</View>
 													<Icon name={weatherIcon(item.weather[0].icon)} type="fontisto" size={20} color="aqua" style={{marginVertical: 10}} />
@@ -204,7 +209,7 @@ const Weather = ({route, navigation}) => {
 										<View key={item.dt}>
 											<View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
 												<View style={{ display: "flex", flexDirection: "row"}}>
-													<View>
+													<View style={{width: 50}}>
 														<Text style={{color: '#fff'}}>{timeConverter(item.dt).day}</Text>
 														<Text style={{fontSize: 12, color: "#fff"}}>{timeConverter(item.dt).date}/{timeConverter(item.dt).month_int}</Text>
 													</View>
@@ -268,7 +273,10 @@ const Weather = ({route, navigation}) => {
 												<Icon style={styles.icon} name="thermometer-outline" type="ionicon" color="white" />
 												<Text style={{color: '#fff'}}>Dew Point</Text>
 											</View>
-											<Text style={{color: '#fff'}}>{data.current.dew_point}</Text>
+											<View style={{ display: "flex", flexDirection: "row"}}>
+                                                <Text style={{color: '#fff'}}>{data.current.dew_point}</Text>
+                                                <Text style={{fontSize: 8, color: "#fff"}}>o</Text>
+                                            </View>
 										</View>
 
 										<View style={styles.details}>
@@ -353,7 +361,7 @@ const Weather = ({route, navigation}) => {
 						</View>
 					</ImageBackground>
                     :
-                    <View style={styles.loading}>
+                    <View style={[styles.loading, width={width}, height={height}]}>
 						<ActivityIndicator size={50} color="yellow" />
                         <Text style={{fontSize: 30, color: "blue"}}></Text>
                     </View>
@@ -366,10 +374,9 @@ const Weather = ({route, navigation}) => {
 const styles = StyleSheet.create({
     loading : {
 		display: 'flex',
-		flexDirection: 'column',
-        alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 22
+        alignItems: 'center',
+        flexDirection: 'column',
     },
     temp : {
         fontSize : 60,
