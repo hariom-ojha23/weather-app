@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, ScrollView, Modal, Alert, Button, ImageBackground, Dimensions, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { 
+    Text, View, StyleSheet, ScrollView, Modal, Alert, RefreshControl, 
+    Button, ImageBackground, Dimensions, Image, PermissionsAndroid } from 'react-native';
 import { API_KEY, HOME_URL } from '../src/API';
 import { Card, Icon, SearchBar } from 'react-native-elements';
 
@@ -9,26 +11,92 @@ const Home = ({navigation}) => {
     const [data, setData] = useState(null);
     const [visible, setVisible] = useState(false);
     const [search, setSearch] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
 
     var width = Dimensions.get('window').width;
     var height = Dimensions.get('window').height;
 
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                getWeather(position.coords.latitude, position.coords.longitude)
-            },
-            (error) => {
-                console.log(error)
+
+        if (Platform.OS === 'android') {
+
+            const grant = PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION );
+
+            if (grant) {
+                console.log( "You are accessing ACCESS_FINE_LOCATION" )
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        getWeather(position.coords.latitude, position.coords.longitude)
+                    },
+                    (error) => {
+                        console.log("error: ", error)
+                        requestLocationPermission()
+                    }
+                )
+            } 
+            else {
+                console.log( "ACCESS_DENIED" )
+                requestLocationPermission()
             }
-        )
+        }
+        else {
+            console.log("not android platform")
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    getWeather(position.coords.latitude, position.coords.longitude)
+                },
+                (error) => {
+                    console.log(error)
+                }
+            )
+        }
+        // navigator.geolocation.getCurrentPosition(
+        //     (position) => {
+        //         getWeather(position.coords.latitude, position.coords.longitude)
+        //     },
+        //     (error) => {
+        //         console.log(error)
+        //     }
+        // )
         // fetch('http://ip-api.com/json/')
         // .then((res) => res.json())
         // .then((data) => getWeather(data.lat, data.lon))
         // .catch((err) => console.log(err))
 
     },[]);
+
+    const requestLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                title: "Location Request",
+                message:
+                    "Clima needs access to your location",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            getWeather(position.coords.latitude, position.coords.longitude)
+                        },
+                        (error) => {
+                            console.log("errors: ", error)
+                            requestLocationPermission()
+                        }
+                    )
+            }
+            else {
+                console.log("Location permission denied");
+            }
+        } catch (err) {
+          console.log("err: ", err);
+        }
+    };
 
     const getWeather = (lat, lon) => {
         // console.log(`${HOME_URL}lat=${lat}&lon=${lon}&units=metric${API_KEY}`)
@@ -114,11 +182,36 @@ const Home = ({navigation}) => {
     const naiveRound = (num, decimalPlaces) => {
 		var p = Math.pow(10, decimalPlaces);
 		return Math.round(num * p) / p;
-	}
+    }
+    
+    const wait = (timeout) => {
+        return new Promise(resolve => {
+          setTimeout(resolve, timeout);
+        });
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        console.log("refreshing");
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                getWeather(position.coords.latitude, position.coords.longitude)
+            },
+            (error) => {
+                console.log("error: ", error)
+                requestLocationPermission()
+            }
+        )
+    
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
 
 
     return (
-        <ScrollView style={{backgroundColor: '#1560bd'}}>
+        <ScrollView style={{backgroundColor: '#1560bd'}} 
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
             <View>
                 {
                     data !== null ?
@@ -147,6 +240,7 @@ const Home = ({navigation}) => {
                                 animationType={'slide'}
                                 transparent={true}
                                 visible={visible}
+                                presentationStyle={'overFullScreen'}
                                 onRequestClose={() => {
                                     Alert.alert("Modal has been closed.");
                                 }}
@@ -186,7 +280,7 @@ const Home = ({navigation}) => {
                                             </View>
                                             <View style={styles.btn}>
                                                 <Button
-                                                    title="Close"
+                                                    title="Cancel"
                                                     onPress={() => {
                                                         setVisible(!visible)
                                                     }}
@@ -401,6 +495,7 @@ const Home = ({navigation}) => {
                             source={require('../logo.png')}
                         />
                     </View>
+                    
                 }
             </View>
         </ScrollView>
