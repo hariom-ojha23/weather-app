@@ -52,14 +52,6 @@ const Home = ({navigation}) => {
                 }
             )
         }
-        // navigator.geolocation.getCurrentPosition(
-        //     (position) => {
-        //         getWeather(position.coords.latitude, position.coords.longitude)
-        //     },
-        //     (error) => {
-        //         console.log(error)
-        //     }
-        // )
         // fetch('http://ip-api.com/json/')
         // .then((res) => res.json())
         // .then((data) => getWeather(data.lat, data.lon))
