@@ -4,6 +4,7 @@ import {
 import { API_KEY, HOME_URL } from '../src/API';
 import { Card, Icon } from 'react-native-elements';
 import HomeTemp from '../components/homeTempComponent';
+import Hourly from '../components/hourlyComponent';
 
 
 const Home = ({navigation}) => {
@@ -220,33 +221,8 @@ const Home = ({navigation}) => {
                             <HomeTemp data={data} navigation={navigation} />
 
                             {/* For Hourly Forecast */}
-                            <View style={{flex: 1, flexDirection: "row-reverse", marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: "#fff"}}>48 Hours</Text>
-                            </View>
-                            <Card containerStyle={styles.hourly}>
-                                <Card.Title style={{color: "#fff"}}>Hourly Forecast</Card.Title>
-                                <Card.Divider />
-                                <ScrollView horizontal={true} style={{display: "flex", flexDirection: "row"}}>
-                                {
-                                    data.hourly.map((item) => {
-                                        return(
-                                            <View key={item.dt} style={{display: "flex", flexDirection: "column", alignItems: "center", paddingHorizontal: 10}}>
-                                                <View style={{display: "flex", flexDirection: "row"}}>
-                                                    <Text style={{color: '#fff'}}>{naiveRound(item.temp, 1)}</Text>
-                                                    <Text style={{fontSize: 8, color: '#fff'}}>o</Text>
-                                                </View>
-                                                    <Icon name={weatherIcon(item.weather[0].icon)} type="fontisto" size={20} color="aqua" style={{marginVertical: 10}} />
-                                                {/* <Card.Image
-                                                    source={{ uri: `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`}}
-                                                    style={{ width: 40, height: 40 }}
-                                                /> */}
-                                                <Text style={{color: '#fff'}}>{timeConverter(item.dt).time}</Text>
-                                            </View>
-                                        )
-                                    })
-                                }
-                                </ScrollView>
-                            </Card>
+
+                            <Hourly data={data} navigation={navigation} />
 
                             {/* For Daily Forecast */}
                             
@@ -476,12 +452,6 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     daily: {
-        marginTop: 5,
-        backgroundColor: "transparent",
-        borderColor: "transparent"
-    },
-    hourly: {
-        marginBottom: 15,
         marginTop: 5,
         backgroundColor: "transparent",
         borderColor: "transparent"
