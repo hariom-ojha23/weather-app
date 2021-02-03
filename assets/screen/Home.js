@@ -5,6 +5,8 @@ import { API_KEY, HOME_URL } from '../src/API';
 import { Card, Icon } from 'react-native-elements';
 import HomeTemp from '../components/homeTempComponent';
 import Hourly from '../components/hourlyComponent';
+import Daily from '../components/dailyComponent';
+import Detail from '../components/detailComponent';
 
 
 const Home = ({navigation}) => {
@@ -219,105 +221,13 @@ const Home = ({navigation}) => {
                     <ImageBackground source={require('../123.jpg')} style={styles.image}>
                         <View>
                             <HomeTemp data={data} navigation={navigation} />
-
-                            {/* For Hourly Forecast */}
-
-                            <Hourly data={data} navigation={navigation} />
-
-                            {/* For Daily Forecast */}
-                            
-                            <View style={{flex: 1, flexDirection: "row-reverse", marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: "#fff"}}>7 Days</Text>
-                            </View>
-                            <Card containerStyle={styles.daily}>
-                                <Card.Title style={{color: '#fff'}}>Daily Forecast</Card.Title>
-                                <Card.Divider />
-                                {
-                                    data.daily.slice(1).map((item) => {
-                                    return (
-                                        <View key={item.dt}>
-                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                                <View style={{ display: "flex", flexDirection: "row"}}>
-                                                    <View style={{width: 50}}>
-                                                        <Text style={{color: '#fff'}}>{timeConverter(item.dt).day}</Text>
-                                                        <Text style={{fontSize: 12, color: "#fff"}}>{timeConverter(item.dt).date}/{timeConverter(item.dt).month_int}</Text>
-                                                    </View>
-                                                    <Card.Image
-                                                        source={{ uri: `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`}}
-                                                        style={{ width: 50, height: 50 }}
-                                                    />
-                                                    <Text style={{ top: 10, color: '#fff'}}>{item.weather[0].description}</Text>
-                                                </View>
-                                                <View style={{ display: "flex", flexDirection: "row"}}>
-                                                    <Text style={{color: '#fff'}}>{item.temp.min}</Text>
-                                                    <Text style={{fontSize: 8, color: "#fff"}}>o</Text>
-                                                    <Text style={{marginLeft: 2, marginRight: 2, color: "#fff" }}>/</Text>
-                                                    <Text style={{color: '#fff'}}>{item.temp.max}</Text>
-                                                    <Text style={{fontSize: 8, color: "#fff"}}>o</Text>
-                                                </View>
-                                            </View>
-                                            <Card.Divider/>
-                                        </View>
-                                    );
-                                    })
-                                }
-                            </Card>
+                            <Hourly data={data} />
+                            <Daily data={data} />
+                            <Detail data={data} />
 
                             {/* For more Details */}
 
-                            <Card containerStyle={styles.card}>
-                                <Card.Title style={{color: '#fff'}}>Details</Card.Title>
-                                <Card.Divider />
-                                <View style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-                                    <View style={{width: "30%", right: 10}}>
-                                        <Icon name={weatherIcon(data.current.weather[0].icon)} type="fontisto" size={50} color="aqua" />
-                                    </View>
-                                    <View style={{width: "70%"}}>
-                                        <View style={styles.details}>
-                                            <View style={styles.details2}>
-                                                <Icon style={styles.icon} name="water-outline" type="ionicon" color="white" />
-                                                <Text style={{color: '#fff'}}>Humidity</Text>
-                                            </View>
-                                            <Text style={{color: '#fff'}}>{data.current.humidity}%</Text>
-                                        </View>
-
-                                        <View style={styles.details}>
-                                            <View style={styles.details2}>
-                                                <Icon style={styles.icon} name="sunny-outline" type="ionicon" color="white" />
-                                                <Text style={{color: '#fff'}}>UV Index</Text>
-                                            </View>
-                                            <Text style={{color: '#fff'}}>{data.current.uvi}</Text>
-                                        </View>
-
-                                        <View style={styles.details}>
-                                            <View style={styles.details2}>
-                                                <Icon style={styles.icon} name="eye-outline" type="ionicon" color="white" />
-                                                <Text style={{color: '#fff'}}>Visibility</Text>
-                                            </View>
-                                            <Text style={{color: '#fff'}}>{data.hourly[0].visibility / 1000} km</Text>
-                                        </View>
-
-                                        <View style={styles.details}>
-                                            <View style={styles.details2}>
-                                                <Icon style={styles.icon} name="thermometer-outline" type="ionicon" color="white" />
-                                                <Text style={{color: '#fff'}}>Dew Point</Text>
-                                            </View>
-                                            <View style={{ display: "flex", flexDirection: "row"}}>
-                                                <Text style={{color: '#fff'}}>{data.current.dew_point}</Text>
-                                                <Text style={{fontSize: 8, color: "#fff"}}>o</Text>
-                                            </View>
-                                        </View>
-
-                                        <View style={styles.details}>
-                                            <View style={styles.details2}>
-                                                <Icon style={styles.icon} name="cloud-outline" type="ionicon" color="white" />
-                                                <Text style={{color: '#fff'}}>Cloud Cover</Text>
-                                            </View>
-                                            <Text style={{color: '#fff'}}>{data.current.clouds}%</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </Card>
+                            
 
                             {/* For Wind And Pressure */}
 
@@ -450,11 +360,6 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         borderColor: "transparent",
         marginBottom: 5
-    },
-    daily: {
-        marginTop: 5,
-        backgroundColor: "transparent",
-        borderColor: "transparent"
     }
 })
 
