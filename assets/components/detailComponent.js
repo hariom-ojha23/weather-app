@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     icon : {
         fontSize: 20,
         marginRight: 8,
-    },
+    }
 })
 
 export default Detail;
