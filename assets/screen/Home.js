@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { 
-    Text, View, StyleSheet, ScrollView, Modal, Alert, RefreshControl, 
-    Button, ImageBackground, Dimensions, Image, PermissionsAndroid } from 'react-native';
+    Text, View, StyleSheet, ScrollView, RefreshControl, ImageBackground, Dimensions, Image, PermissionsAndroid } from 'react-native';
 import { API_KEY, HOME_URL } from '../src/API';
-import { Card, Icon, SearchBar } from 'react-native-elements';
+import { Card, Icon } from 'react-native-elements';
+import HomeTemp from '../components/homeTempComponent';
 
 
 const Home = ({navigation}) => {
 
     const [data, setData] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [search, setSearch] = useState('');
     const [refreshing, setRefreshing] = useState(false);
 
     var width = Dimensions.get('window').width;
@@ -178,7 +176,8 @@ const Home = ({navigation}) => {
 		else if (code == "50d" || code == "50n") {return ("fog")}
 		else {return(<View><Text>Harry</Text></View>)}
     }
-    
+
+
     const naiveRound = (num, decimalPlaces) => {
 		var p = Math.pow(10, decimalPlaces);
 		return Math.round(num * p) / p;
@@ -218,80 +217,7 @@ const Home = ({navigation}) => {
                     <View style={styles.container}>
                     <ImageBackground source={require('../123.jpg')} style={styles.image}>
                         <View>
-                            <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                                <View style={{margin: 10}}>
-                                    <Text style={{fontSize: 15, top: 15, left: 15, color: "#fff" }}>{data.current.weather[0].main}</Text>
-                                    <View style={styles.container2}>
-                                        <Text style={ styles.temp }>{naiveRound(data.current.temp, 1)}</Text>
-                                        <Text style={{top: 10, fontSize: 25, color: "#fff"}}>o</Text>
-                                        <Text style={{marginTop: 10, fontSize: 18, top: 30, color: "#fff"}}>C</Text>
-                                    </View>
-                                    <Text style={{fontSize: 15, top: -10, left: 15, color: "#fff" }}>
-                                        {timeConverter(data.current.dt).date} {timeConverter(data.current.dt).month_str}  {timeConverter(data.current.dt).year} 
-                                    </Text>
-                                </View>
-                                <View style={{ margin: 20, top: 5, right: 15, display: "flex", flexDirection: "column", justifyContent: 'center', alignItems: "center"  }}>
-                                    <Icon name="search-outline" type="ionicon" size={40} reverse color="#800080" onPress={() => {setVisible(true);}} />
-                                    <Text style={{color: "#fff"}}>Search city</Text>
-                                </View>
-                            </View>
-
-                            <Modal
-                                animationType={'slide'}
-                                transparent={true}
-                                visible={visible}
-                                presentationStyle={'overFullScreen'}
-                                onRequestClose={() => {
-                                    Alert.alert("Modal has been closed.");
-                                }}
-                            >
-                                <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        <SearchBar
-                                            placeholder="Search City"
-                                            onChangeText={setSearch}
-                                            value={search}
-                                            platform="android"
-                                        />
-                                        <View style={{display: "flex", flexDirection: 'row'}}>
-                                            <View style={styles.btn}>
-                                                <Button
-                                                    title="Search"
-                                                    raised={true}
-                                                    onPress={() => {
-                                                        setVisible(!visible)
-                                                        if (search != '') {
-                                                            navigation.navigate('Weather', { name: search })
-                                                        }
-                                                        else {
-                                                            Alert.alert(
-                                                                'Error', 
-                                                                "Invalid City, State, Country or Zip code",
-                                                                [
-                                                                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                                                                ],
-                                                                { cancelable: true }
-                                                            )
-                                                        }
-                                                        setSearch('')
-                                                    }}
-                                                    
-                                                />
-                                            </View>
-                                            <View style={styles.btn}>
-                                                <Button
-                                                    title="Cancel"
-                                                    onPress={() => {
-                                                        setVisible(!visible)
-                                                    }}
-                                                    style={styles.btn}
-                                                    color="red"
-                                                />
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </Modal>
+                            <HomeTemp data={data} navigation={navigation} />
 
                             {/* For Hourly Forecast */}
                             <View style={{flex: 1, flexDirection: "row-reverse", marginLeft: 20}}>
@@ -538,30 +464,6 @@ const styles = StyleSheet.create({
     icon : {
         fontSize: 20,
         marginRight: 8,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5
-    },
-    btn : {
-        marginHorizontal: 10
     },
     image: {
         flex: 1,
