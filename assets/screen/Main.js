@@ -1,59 +1,74 @@
 import React from 'react';
-import Home from './Home';
-import Weather from './Weather';
-import { View, Text } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { createStackNavigator } from '@react-navigation/stack';
+import Favorite from './FavoriteCity';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import HomeNavigator from './Stack';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-function LogoTitle() {
-    return (
-        <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-            <Icon name="day-cloudy" type="fontisto" color="#fff" style={{marginRight: 5}} />
-            <Text style={{fontSize: 20, color: "#fff"}}>Clima</Text>
-        </View>
-    );
-  }
+const CustomDrawer = (props) => {
+    return(
+        <DrawerContentScrollView {...props}>
+            <View style={styles.container}>
+                <View style={styles.drawerHeader}>
+                    <View style={{ flex: 1 }}>
+                        <Image source={require('../icon.png')}
+                            style={styles.drawerImage} />
+                    </View>
+                    <View style={{ flex: 2 }}>
+                        <Text style={styles.drawerHeaderText}>Clima</Text>
+                    </View>
+                </View>
+                <DrawerItemList {...props} />
+            </View>
+        </DrawerContentScrollView>
+    )
+}
+
+const MyDrawer = () => {
+    return(
+        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
+        drawerStyle={{
+            backgroundColor: '#d1c4e9'
+        }}
+        initialRouteName={HomeNavigator} >
+            <Drawer.Screen name="Home" component={HomeNavigator} />
+            <Drawer.Screen name="Favorite Cities" component={Favorite} />
+        </Drawer.Navigator>
+    )
+}
 
 const Main = () => {
     return(
-        <Stack.Navigator
-            screenOptions={{
-                headerStyle: {
-                backgroundColor: '#1560bd',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                fontWeight: 'bold',
-                alignSelf: 'center'
-                },
-            }}
-        >
-            <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ 
-                headerTitle: props => <LogoTitle {...props} />
-            }}
-            />
-            <Stack.Screen
-            name="Weather"
-            component={Weather}
-            options={{
-                title: 'Clima',
-                headerStyle: {
-                    backgroundColor: '#800080',
-                },
-                headerTitleStyle: {
-                fontWeight: 'bold',
-                alignSelf: 'center',
-                right: 25
-                },
-        }}
-            />
-        </Stack.Navigator>
+        <NavigationContainer>
+            <MyDrawer />
+        </NavigationContainer>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    drawerHeader: {
+        backgroundColor: '#512DA8',
+        height: 140,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        flexDirection: 'row'
+    },
+    drawerHeaderText: {
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    drawerImage: {
+        height: 60,
+        margin: 10,
+        width: 80
+    }
+});
 
 export default Main;

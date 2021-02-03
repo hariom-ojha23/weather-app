@@ -1,13 +1,17 @@
 import React from 'react';
 import Main from './assets/screen/Main';
-import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from 'react-redux';
+import { ConfigureStore } from './assets/redux/configureStore';
+import { PersistGate } from 'redux-persist/es/integration/react';
 
+const { store, persistor } = ConfigureStore()
 
-
-export default function App({navigation}) {
-    return (
-      <NavigationContainer>
+export default function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
         <Main />
-      </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
