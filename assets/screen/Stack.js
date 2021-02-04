@@ -1,6 +1,7 @@
 import React from 'react';
 import Home from './Home';
 import Weather from './Weather';
+import FavoriteCity from './FavoriteCity';
 import { View, Text, StyleSheet } from "react-native";
 import { Icon } from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -79,6 +80,20 @@ const HomeNavigator = () => {
     );
 }
 
+const FavoriteNavigator = () => {
+    return(
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Favorite"
+                component={FavoriteCity}
+                options={{ 
+                    headerTitle: props => <HomeLogoTitle {...props} />
+                }}
+            />
+        </Stack.Navigator>
+    )
+}
+
 const styles = StyleSheet.create({
     row: {
         display: 'flex', 
@@ -87,4 +102,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default HomeNavigator;
+export {HomeNavigator, FavoriteNavigator};

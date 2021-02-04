@@ -1,9 +1,8 @@
 import React from 'react';
-import Favorite from './FavoriteCity';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeNavigator from './Stack';
+import {HomeNavigator, FavoriteNavigator } from './Stack';
 
 const Drawer = createDrawerNavigator();
 
@@ -34,7 +33,7 @@ const MyDrawer = () => {
         }}
         initialRouteName={HomeNavigator} >
             <Drawer.Screen name="Home" component={HomeNavigator} />
-            <Drawer.Screen name="Favorite Cities" component={Favorite} />
+            <Drawer.Screen name="Favorite Cities" component={FavoriteNavigator} />
         </Drawer.Navigator>
     )
 }
