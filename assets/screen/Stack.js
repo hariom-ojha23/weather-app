@@ -57,24 +57,15 @@ const HomeNavigator = () => {
         <Stack.Screen
         name="Weather"
         component={Weather}
-        options={{
+        options={({ navigation, route }) => ({
             headerTitle: props => <WeatherLogoTitle {...props} />,
             headerStyle: {
                 backgroundColor: '#800080',
             },
-            headerRight: () => (
-                <Icon
-                  onPress={() => alert('This is a button!')}
-                  name="heart-outline" 
-                  type="ionicon" size={30} 
-                  color="#fff" 
-                  style={{marginRight: 5}}
-                />
-            ),
             headerRightContainerStyle: {
                 paddingHorizontal: 25
             }
-        }}
+        })}
         />
       </Stack.Navigator>
     );

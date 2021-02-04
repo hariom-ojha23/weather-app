@@ -1,18 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { API_KEY, URL, HOME_URL } from '../src/API';
 import { Text, View, StyleSheet, ScrollView, ImageBackground, ActivityIndicator, Alert, Dimensions } from 'react-native';
+import { Icon } from 'react-native-elements';
 import WeatherTemp from '../components/weatherTempComponent';
 import Hourly from '../components/hourlyComponent';
 import Daily from '../components/dailyComponent';
 import Detail from '../components/detailComponent';
 import Wind_Pressure from '../components/windandpressureComponent';
 import Sunrise_Sunset from '../components/sunriseAndSetComponent';
+import { connect } from 'react-redux';
+import { addFavorite, deleteFavorite } from '../redux/ActionCreator';
+
+const mapStateToProps = (state) => {
+	return{
+		favorites: state.favorites
+	}
+}
+
+const mapDispatchToProps = (dispatch) => ({
+	addFavorite: (city) => dispatch(addFavorite(city)),
+	deleteFavorite: (city) => dispatch(deleteFavorite(city))
+})
 
 
-const Weather = ({route, navigation}) => {
+const Weather = ({route, navigation, favorites, addFavorite, deleteFavorite}) => {
 
 	const [data, setData] = useState(null);
 	const [city, setCity] = useState('');
+
+	favorites.map((item) => {
+		console.log(item)
+	})
+
+	AddFavorite = (city) => {
+		addFavorite(city)
+	}
+
+	DeleteFavorite = (city) => {
+		deleteFavorite(city)
+	}
+
 
 	const {name} = route.params;
 	var width = Dimensions.get('window').width;
@@ -22,12 +49,12 @@ const Weather = ({route, navigation}) => {
 		fetch(`${URL}${name}${API_KEY}`)
 		.then((res) => res.json())
 		.then((result) => {
-			console.log(result.name)
+			//console.log(result.name)
 			setCity(result.name)
 			getWeather(result.coord.lat, result.coord.lon)
 		})
 		.catch((error) => { 
-			console.log("Error");
+			console.log("Error: ", error);
 			Alert.alert(
 				'Not Found', 
 				"Invalid City, State, Country or Zip code",
@@ -39,6 +66,7 @@ const Weather = ({route, navigation}) => {
 			navigation.navigate('Home')
 
 		})
+
 	}, [])
 
 	const getWeather = (lat, lon) => {
@@ -53,6 +81,39 @@ const Weather = ({route, navigation}) => {
         })
 
 	}
+
+	useLayoutEffect(() => {
+		const SetIcon = () => {
+			if (favorites.some((el) => el == city)) {
+				return(
+					<Icon
+						onPress={() => DeleteFavorite(city)}
+						name="heart"
+						type="ionicon" size={30} 
+						color="#f00" 
+						style={{marginRight: 5}}
+					/>
+				)
+			}
+			else {
+				return(
+					<Icon
+						onPress={() => AddFavorite(city)}
+						name="heart-outline"
+						type="ionicon" size={30} 
+						color="#fff" 
+						style={{marginRight: 5}}
+					/>
+				)
+			}
+		}
+	
+		navigation.setOptions({
+			headerRight: () => (
+				<SetIcon />
+			),
+		})
+	})
 
 
 	return (
@@ -102,4 +163,4 @@ const styles = StyleSheet.create({
 
 
 
-export default Weather;
+export default connect(mapStateToProps, mapDispatchToProps)(Weather);
