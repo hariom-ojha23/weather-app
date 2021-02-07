@@ -18,8 +18,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-	addFavorite: (city) => dispatch(addFavorite(city)),
-	deleteFavorite: (city) => dispatch(deleteFavorite(city))
+	addFavorite: (obj) => dispatch(addFavorite(obj)),
+	deleteFavorite: (obj) => dispatch(deleteFavorite(obj))
 })
 
 
@@ -28,15 +28,11 @@ const Weather = ({route, navigation, favorites, addFavorite, deleteFavorite}) =>
 	const [data, setData] = useState(null);
 	const [city, setCity] = useState('');
 
-	favorites.map((item) => {
-		console.log(item)
-	})
-
-	AddFavorite = (city) => {
+	const AddFavorite = (city) => {
 		addFavorite(city)
 	}
 
-	DeleteFavorite = (city) => {
+	const DeleteFavorite = (city) => {
 		deleteFavorite(city)
 	}
 
@@ -49,7 +45,7 @@ const Weather = ({route, navigation, favorites, addFavorite, deleteFavorite}) =>
 		fetch(`${URL}${name}${API_KEY}`)
 		.then((res) => res.json())
 		.then((result) => {
-			//console.log(result.name)
+			console.log(result.name)
 			setCity(result.name)
 			getWeather(result.coord.lat, result.coord.lon)
 		})
@@ -83,8 +79,9 @@ const Weather = ({route, navigation, favorites, addFavorite, deleteFavorite}) =>
 	}
 
 	useLayoutEffect(() => {
+
 		const SetIcon = () => {
-			if (favorites.some((el) => el == city)) {
+			if (favorites.favorites.some((el) => el == city)) {
 				return(
 					<Icon
 						onPress={() => DeleteFavorite(city)}

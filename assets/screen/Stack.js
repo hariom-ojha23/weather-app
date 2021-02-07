@@ -1,7 +1,7 @@
 import React from 'react';
 import Home from './Home';
 import Weather from './Weather';
-import FavoriteCity from './FavoriteCity';
+import Favorite from './FavoriteCity';
 import { View, Text, StyleSheet } from "react-native";
 import { Icon } from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -76,9 +76,12 @@ const FavoriteNavigator = () => {
         <Stack.Navigator>
             <Stack.Screen
                 name="Favorite"
-                component={FavoriteCity}
+                component={Favorite}
                 options={{ 
-                    headerTitle: props => <HomeLogoTitle {...props} />
+                    headerTitle: props => <HomeLogoTitle {...props} />,
+                    headerStyle: {
+                        backgroundColor: '#800080',
+                    },
                 }}
             />
         </Stack.Navigator>

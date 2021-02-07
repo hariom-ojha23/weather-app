@@ -1,20 +1,32 @@
 import * as ActionTypes from './ActionTypes';
 
-export const favorites = (state = [], action) => {
+const initialState = {
+    favorites : []
+}
 
+export const favorites = (state = initialState, action) => {
     switch (action.type) {
+
         case (ActionTypes.ADD_CITY):
-            if(state.some((el) => el == action.payload)) {
-                return state;
+
+            if (state.favorites.some((el) => el == action.payload)) {
+                return {...state};
             }
             else {
-                return (state.concat(action.payload));
+                
+                return {
+                    ...state,
+                    favorites: [...state.favorites, action.payload]
+                }
             }
-        
+
         case (ActionTypes.DELETE_CITY):
-            return(state.filter((favorite) => favorite != action.payload))
+            return {
+                ...state,
+                favorites: [...state.favorites.filter((el) => el != action.payload)]
+            }
 
         default:
-            return state;
+            return {...state};
     }
 }

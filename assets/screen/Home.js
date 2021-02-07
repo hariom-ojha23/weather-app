@@ -17,6 +17,7 @@ const Home = ({navigation}) => {
     var width = Dimensions.get('window').width;
     var height = Dimensions.get('window').height;
 
+    console.log("home screen")
 
     useEffect(() => {
 
