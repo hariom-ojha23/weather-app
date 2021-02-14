@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 const mapStateToProps = (state) => {
     return{
         favorites : state.favorites.favorites
+
     }
 }
 

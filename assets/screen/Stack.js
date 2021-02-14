@@ -1,12 +1,13 @@
 import React from 'react';
+import { Icon } from 'react-native-elements';
 import Home from './Home';
 import Weather from './Weather';
 import Favorite from './FavoriteCity';
 import { View, Text, StyleSheet } from "react-native";
-import { Icon } from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
+
 
 function HomeLogoTitle() {
     return (
@@ -25,9 +26,6 @@ function WeatherLogoTitle() {
                     <Icon name="day-cloudy" type="fontisto" color="#fff" style={{marginRight: 5}} />
                     <Text style={{fontSize: 20, color: "#fff"}}>Clima</Text>
                 </View>
-                {/* <View>
-                    <Icon name="heart-outline" type="ionicon" size={30} color="#fff" style={{marginRight: 5}} />
-                </View> */}
             </View>
         </View>
     );
@@ -57,7 +55,7 @@ const HomeNavigator = () => {
         <Stack.Screen
         name="Weather"
         component={Weather}
-        options={({ navigation, route }) => ({
+        options={({ navigation }) => ({
             headerTitle: props => <WeatherLogoTitle {...props} />,
             headerStyle: {
                 backgroundColor: '#800080',

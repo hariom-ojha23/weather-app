@@ -25,6 +25,7 @@
     "react-native-screens": "~2.15.2",
     "react-native-vector-icons": "^8.0.0",
     "react-native-web": "~0.13.12",
+    "react-navigation-redux-helpers": "^4.0.1",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",

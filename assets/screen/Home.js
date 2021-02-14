@@ -7,7 +7,7 @@ import Daily from '../components/dailyComponent';
 import Detail from '../components/detailComponent';
 import Wind_Pressure from '../components/windandpressureComponent';
 import Sunrise_Sunset from '../components/sunriseAndSetComponent';
-
+import {connect} from 'react-redux'
 
 const Home = ({navigation}) => {
 

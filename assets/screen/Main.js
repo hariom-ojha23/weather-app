@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import {HomeNavigator, FavoriteNavigator } from './Stack';
+import { HomeNavigator, FavoriteNavigator } from './Stack';
+import { connect } from 'react-redux';
+
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawer = (props) => {
+const CustomDrawer = ({props}) => {
     return(
         <DrawerContentScrollView {...props}>
             <View style={styles.container}>
@@ -28,22 +30,44 @@ const CustomDrawer = (props) => {
 const MyDrawer = () => {
     return(
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
-        drawerStyle={{
-            backgroundColor: '#d1c4e9'
-        }}
-        initialRouteName={HomeNavigator} >
+            drawerStyle={{
+                backgroundColor: '#d1c4e9'
+            }}
+            drawerContentOptions={{
+                labelStyle: {
+                    fontSize: 17
+                },
+                inactiveTintColor: 'black',
+            }}
+            initialRouteName={HomeNavigator}
+        >
             <Drawer.Screen name="Home" component={HomeNavigator} />
             <Drawer.Screen name="Favorite Cities" component={FavoriteNavigator} />
         </Drawer.Navigator>
     )
 }
 
-const Main = () => {
-    return(
-        <NavigationContainer>
-            <MyDrawer />
-        </NavigationContainer>
-    )
+const mapStateToProps = (state) => {
+    return {
+        nav: state.routes
+    }
+}
+
+class Main extends Component {
+
+    constructor(props) {
+        super(props)
+
+    }
+
+    render() {
+
+        return (
+            <NavigationContainer>
+                <MyDrawer />
+            </NavigationContainer>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
@@ -70,4 +94,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Main;
+export default connect(mapStateToProps)(Main);
