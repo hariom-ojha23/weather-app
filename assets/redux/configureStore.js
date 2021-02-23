@@ -12,16 +12,13 @@ export const ConfigureStore = () => {
     const config = {
         key: 'root',
         storage: AsyncSTorage,
-        debug: true,
-        timeout: null
+        debug: true
     }
 
-    const initialState = state
 
     const store = createStore(
         persistCombineReducers(config, {
-            favorites,
-            nav: initialState
+            favorites
         }),
         applyMiddleware(thunk, logger)
     )

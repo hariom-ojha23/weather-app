@@ -1,97 +1,49 @@
-import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import React from 'react';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { HomeNavigator, FavoriteNavigator } from './Stack';
-import { connect } from 'react-redux';
+import { HomeNavigator, FavoriteNavigator} from './Stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Icon } from 'react-native-elements';
 
 
-const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator()
 
-const CustomDrawer = ({props}) => {
+const TabNavigator = () => {
     return(
-        <DrawerContentScrollView {...props}>
-            <View style={styles.container}>
-                <View style={styles.drawerHeader}>
-                    <View style={{ flex: 1 }}>
-                        <Image source={require('../icon.png')}
-                            style={styles.drawerImage} />
-                    </View>
-                    <View style={{ flex: 2 }}>
-                        <Text style={styles.drawerHeaderText}>Clima</Text>
-                    </View>
-                </View>
-                <DrawerItemList {...props} />
-            </View>
-        </DrawerContentScrollView>
-    )
-}
-
-const MyDrawer = () => {
-    return(
-        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}
-            drawerStyle={{
-                backgroundColor: '#d1c4e9'
-            }}
-            drawerContentOptions={{
-                labelStyle: {
-                    fontSize: 17
-                },
-                inactiveTintColor: 'black',
-            }}
-            initialRouteName={HomeNavigator}
+        <Tab.Navigator
+        screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+  
+              if (route.name === 'Home') {
+                iconName = focused ? 'home' : 'home-outline';
+              } else if (route.name === 'Favorite') {
+                iconName = focused ? 'heart' : 'heart-outline';
+              }
+  
+              return <Icon name={iconName} type="ionicon" size={size} color={color} />;
+            },
+          })}
+          tabBarOptions={{
+            activeTintColor: 'white',
+            inactiveTintColor: 'black',
+            activeBackgroundColor: '#5d9bd9',
+            inactiveBackgroundColor: '#5d9bd9'
+          }}
         >
-            <Drawer.Screen name="Home" component={HomeNavigator} />
-            <Drawer.Screen name="Favorite Cities" component={FavoriteNavigator} />
-        </Drawer.Navigator>
+            <Tab.Screen name="Home" component={HomeNavigator} />
+            <Tab.Screen name="Favorite" component={FavoriteNavigator} />
+        </Tab.Navigator>
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        nav: state.routes
-    }
+const Main = () => {
+
+    return(
+        <NavigationContainer>
+            <TabNavigator />
+        </NavigationContainer>
+    )
 }
 
-class Main extends Component {
-
-    constructor(props) {
-        super(props)
-
-    }
-
-    render() {
-
-        return (
-            <NavigationContainer>
-                <MyDrawer />
-            </NavigationContainer>
-        )
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    drawerHeader: {
-        backgroundColor: '#512DA8',
-        height: 140,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-        flexDirection: 'row'
-    },
-    drawerHeaderText: {
-        color: 'white',
-        fontSize: 24,
-        fontWeight: 'bold'
-    },
-    drawerImage: {
-        height: 60,
-        margin: 10,
-        width: 80
-    }
-});
-
-export default connect(mapStateToProps)(Main);
+export default Main

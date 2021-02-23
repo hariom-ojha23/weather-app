@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, RefreshControl, ImageBackground, Dimensions, Image, PermissionsAndroid } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ImageBackground, Dimensions, ActivityIndicator, PermissionsAndroid } from 'react-native';
 import { API_KEY, HOME_URL } from '../src/API';
 import HomeTemp from '../components/homeTempComponent';
 import Hourly from '../components/hourlyComponent';
@@ -7,7 +7,7 @@ import Daily from '../components/dailyComponent';
 import Detail from '../components/detailComponent';
 import Wind_Pressure from '../components/windandpressureComponent';
 import Sunrise_Sunset from '../components/sunriseAndSetComponent';
-import {connect} from 'react-redux'
+import { Platform } from 'react-native';
 
 const Home = ({navigation}) => {
 
@@ -15,13 +15,12 @@ const Home = ({navigation}) => {
     const [refreshing, setRefreshing] = useState(false);
 
     var width = Dimensions.get('window').width;
-    var height = Dimensions.get('window').height;
+    var height = Dimensions.get('window').height - 100;
 
-    console.log("home screen")
 
     useEffect(() => {
 
-        if (Platform.OS === 'android') {
+        if (Platform.OS === 'android' || Platform.os === 'web') {
 
             const grant = PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION );
 
@@ -149,10 +148,8 @@ const Home = ({navigation}) => {
                     </View>
                     :
                     <View style={[styles.loading, width={width}, height={height}]}>
-                        <Image
-                            style={{width: 150, height: 150, top: -50}}
-                            source={require('../logo.png')}
-                        />
+						<ActivityIndicator size={50} color="yellow" />
+                        <Text style={{fontSize: 30, color: "blue"}}></Text>
                     </View>
                 }
             </View>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet, Modal, Alert, TouchableOpacity } from 'react-native';
 import { Icon, SearchBar } from 'react-native-elements';
 
 const HomeTemp = (props) => {
@@ -79,11 +79,10 @@ const HomeTemp = (props) => {
                             value={search}
                             platform="android"
                         />
-                        <View style={{display: "flex", flexDirection: 'row'}}>
-                            <View style={styles.btn}>
-                                <Button
-                                    title="Search"
-                                    raised={true}
+                        <View style={{display: "flex", flexDirection: 'row', marginTop: 10}}>
+                            <View style={styles.btnView}>
+                                <TouchableOpacity
+                                    style={[styles.roundedButton, styles.search]}
                                     onPress={() => {
                                         setVisible(!visible)
                                         if (search != '') {
@@ -102,17 +101,29 @@ const HomeTemp = (props) => {
                                         setSearch('')
                                     }}
                                     
-                                />
+                                >
+                                    <Text style={styles.btnText}>Search</Text>
+                                </TouchableOpacity>
                             </View>
-                            <View style={styles.btn}>
-                                <Button
+                            <View style={styles.btnView}>
+                                {/* <Button
                                     title="Cancel"
                                     onPress={() => {
                                         setVisible(!visible)
                                     }}
                                     style={styles.btn}
                                     color="red"
-                                />
+                                /> */}
+                                <TouchableOpacity
+                                style={[styles.roundedButton, styles.cancel]}
+                                onPress={() => {
+                                    setVisible(!visible)
+                                }}
+                                >
+                                    <Text style={styles.btnText}>
+                                        Cancel
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -133,8 +144,31 @@ const styles = StyleSheet.create({
         flexDirection : "row",
         padding: 10
     },
-    btn : {
-        marginHorizontal: 10
+    btnView : {
+        marginHorizontal: 10,
+    },
+    roundedButton: {
+        display: 'flex',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 1000,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: {width: 2, height: 2},
+        shadowOpacity: 0.25,
+        shadowRadius: 3.5
+    },
+    cancel: {
+        backgroundColor: 'red'
+    },  
+    search: {
+        backgroundColor: '#1b9cfc'
+    },
+    btnText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16
     },
     centeredView: {
         flex: 1,

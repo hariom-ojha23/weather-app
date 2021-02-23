@@ -6,6 +6,8 @@ const Wind_Pressure = (props) => {
 
     const data = props.data;
 
+    console.log(data)
+
     const direction = (data) => {
         if (data != null) {
             if (data >= 0 && data < 11.25) { return "N"}
